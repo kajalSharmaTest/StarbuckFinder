@@ -11,7 +11,7 @@ import retrofit2.Response
 
 
 class StarbuckViewModel constructor(private val repository: Repository)  : ViewModel() {
-
+    val sharedData =  MutableLiveData<Starbuck>()
     val movieList = MutableLiveData<List<Starbuck>>()
     val errorMessage = MutableLiveData<String>()
 
@@ -29,5 +29,14 @@ class StarbuckViewModel constructor(private val repository: Repository)  : ViewM
                 errorMessage.postValue(t.message)
             }
         })
+
     }
+
+    fun setData(input: Starbuck) {
+        sharedData.value = input
+        Log.d("Kajal","setdata :::"+input)
+    }
+
+    // function to get the changed data
+    fun getData(): MutableLiveData<Starbuck> = sharedData
 }
