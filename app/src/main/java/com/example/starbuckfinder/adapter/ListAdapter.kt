@@ -5,17 +5,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.starbuckfinder.R
-import com.example.starbuckfinder.model.Starbuck
 import com.example.starbuckfinder.databinding.AdapterStarbuckBinding
+import com.example.starbuckfinder.model.Model
 
-class StarbuckAdapter(
-    private val onItemClicked: (Starbuck) -> Unit
+/*
+Adapter used to display list of data in recyclerView
+@param onItemClicked : to handle item click event of list
+ */
+class ListAdapter(
+    private val onItemClicked: (Model) -> Unit
 ): RecyclerView.Adapter<MainViewHolder>() {
+    val TAG: String = "ListAdapter"
+    var movies = mutableListOf<Model>()
 
-    var movies = mutableListOf<Starbuck>()
-
-    fun setMovieList(movies: List<Starbuck>) {
+    fun setMovieList(movies: List<Model>) {
         this.movies = movies.toMutableList()
         notifyDataSetChanged()
     }
@@ -27,6 +30,9 @@ class StarbuckAdapter(
         return MainViewHolder(binding)
     }
 
+    /*
+    Binding data set to view in layout
+     */
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val movie = movies[position]
         holder.binding.name.text = movie.name
@@ -34,8 +40,9 @@ class StarbuckAdapter(
 
 
          Glide.with(holder.itemView.context).load(movie.imageUrl).into(holder.binding.imageview)
+        // Click listener to handle item click
         holder.itemView.setOnClickListener {
-            Log.d("Kajal","indide onClick0000")
+            Log.d(TAG,"indide onClickListener")
             onItemClicked(movie) }
     }
 
@@ -47,6 +54,9 @@ class StarbuckAdapter(
     }
 }
 
+/*
+View Holder for every item in recyclerView
+ */
 class MainViewHolder(val binding: AdapterStarbuckBinding) : RecyclerView.ViewHolder(binding.root) {
 
 }

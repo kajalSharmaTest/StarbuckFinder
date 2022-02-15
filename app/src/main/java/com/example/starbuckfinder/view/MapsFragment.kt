@@ -1,42 +1,37 @@
 package com.example.starbuckfinder.view
 
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.example.starbuckfinder.model.Starbuck
-import com.example.starbuckfinder.network.Repository
-import com.example.starbuckfinder.network.RetrofitService
-import com.example.starbuckfinder.viewModel.StarbuckViewModel
-import com.example.starbuckfinder.viewModel.ViewModelFactory
-import com.google.android.gms.maps.*
-
+import androidx.fragment.app.Fragment
+import com.example.starbuckfinder.model.Model
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
+
+/*
+MapFragment to display selected list item on Map
+ */
 class MapsFragment : Fragment() {
     private var mMap: MapView? = null
-    lateinit var selectedStarbuck: Starbuck
+    lateinit var selectedMovie: Model
     val ZOOM_LEVEL = 10f
+    val TAG: String = "MapsFragment"
 
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * Adding selected list item as marker on map
+     */
     private val callback = OnMapReadyCallback { googleMap ->
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-         val latLng: LatLng = LatLng(selectedStarbuck.lat, selectedStarbuck.lon)
-        val marker: MarkerOptions = MarkerOptions().position(latLng).title(selectedStarbuck.name)
+         val latLng: LatLng = LatLng(selectedMovie.lat, selectedMovie.lon)
+        val marker: MarkerOptions = MarkerOptions().position(latLng).title(selectedMovie.name)
         googleMap.addMarker(marker)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL))
     }
@@ -51,15 +46,17 @@ class MapsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(com.example.starbuckfinder.R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+
+        // Retrieving selected list item from arguments passed from previous ListFragment
         if (getArguments() != null) {
-             selectedStarbuck = getArguments()?.getParcelable("selectedStarbuck")!!
-            Log.d("Kajal","selectedStarbuck:::"+selectedStarbuck)
+            selectedMovie = getArguments()?.getParcelable("selectedMovie")!!
+            Log.d(TAG,"selectedStarbuck:::"+selectedMovie)
         }
 
     }
 
 
-
+// Handle Map lifecycle with Fragment lifecycle
     override fun onResume() {
         super.onResume()
         mMap?.onResume()

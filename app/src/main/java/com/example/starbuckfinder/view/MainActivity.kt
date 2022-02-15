@@ -25,6 +25,9 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.util.*
 
+/*
+MainActivity to handle all fragments and handle UI
+ */
 class MainActivity : AppCompatActivity()  {
     private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
@@ -40,10 +43,12 @@ class MainActivity : AppCompatActivity()  {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // FusedLocationClient to get current device location
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLocation()
     }
 
+    // Checking if location service is enabled in device
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
             getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -52,6 +57,7 @@ class MainActivity : AppCompatActivity()  {
         )
     }
 
+    // Checking if location permission is enabled for application
     private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -67,6 +73,7 @@ class MainActivity : AppCompatActivity()  {
         return false
     }
 
+    // request location permission application
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             this,
@@ -78,7 +85,8 @@ class MainActivity : AppCompatActivity()  {
         )
     }
 
-    @SuppressLint("MissingSuperCall")
+
+    // Once the permission is enabled by user then access current device location
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -91,6 +99,9 @@ class MainActivity : AppCompatActivity()  {
         }
     }
 
+    /*
+    Check location permission . If enabled then detect currenty location otherwise request location permission
+     */
     @SuppressLint("MissingPermission", "SetTextI18n")
     private fun getLocation() {
         if (checkPermissions()) {
@@ -102,8 +113,8 @@ class MainActivity : AppCompatActivity()  {
                         val geocoder = Geocoder(this, Locale.getDefault())
                         val list: List<Address> =
                             geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                        Log.d("Kajal","currentlatitude:::"+list[0].latitude)
-                        Log.d("Kajal","currentlongitude:::"+list[0].longitude)
+                        Log.d(TAG,"currentlatitude:::"+list[0].latitude)
+                        Log.d(TAG,"currentlongitude:::"+list[0].longitude)
                         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
                         val listFragment = ListFragment()
                         val bundle = Bundle()

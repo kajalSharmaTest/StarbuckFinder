@@ -1,43 +1,43 @@
 package com.example.starbuckfinder.view
 
-import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.starbuckfinder.R
 import com.example.starbuckfinder.`interface`.OnItemClickListener
-import com.example.starbuckfinder.adapter.StarbuckAdapter
-import com.example.starbuckfinder.model.Starbuck
+import com.example.starbuckfinder.adapter.ListAdapter
+import com.example.starbuckfinder.model.Model
 import com.example.starbuckfinder.network.Repository
 import com.example.starbuckfinder.network.RetrofitService
-import com.example.starbuckfinder.viewModel.StarbuckViewModel
+import com.example.starbuckfinder.viewModel.MovieViewModel
 import com.example.starbuckfinder.viewModel.ViewModelFactory
 import java.util.*
 
-
+/*
+List Fragment to display all data received from server into list using recyclerView
+ */
 class ListFragment : Fragment(), OnItemClickListener {
 
 
-    lateinit var viewModel: StarbuckViewModel
+    lateinit var viewModel: MovieViewModel
+    lateinit var spinner: ProgressBar
 
     private val retrofitService = RetrofitService.getInstance()
-    lateinit var adapter : StarbuckAdapter
+    lateinit var adapter : ListAdapter
     private val TAG = "ListFragment"
 
     lateinit var currentLocation: Location
 
-    @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,42 +46,56 @@ class ListFragment : Fragment(), OnItemClickListener {
             R.layout.layout_list_frag
             , container, false)
 
+        /*
+        Retrieving current location detected in MainActivity
+         */
         if (getArguments() != null) {
-            currentLocation = getArguments()?.getParcelable("location")!!
-            Log.d("Kajal","currentlatitude:::"+currentLocation.latitude)
-            Log.d("Kajal","currentlongitude:::"+currentLocation.longitude)
+            currentLocation = requireArguments()?.getParcelable("location")!!
+            Log.d(TAG,"currentlatitude:::"+currentLocation.latitude)
+            Log.d(TAG,"currentlongitude:::"+currentLocation.longitude)
         }
-        viewModel = ViewModelProvider(this, ViewModelFactory(Repository(retrofitService))).get(StarbuckViewModel::class.java)
+
+        // viewModel that contain all data (server response)
+        viewModel = ViewModelProvider(this, ViewModelFactory(Repository(retrofitService))).get(MovieViewModel::class.java)
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerview)
-        adapter = StarbuckAdapter {starBuck ->
+         spinner  = view.findViewById(R.id.progress_circular)
+
+        // display spinner until we receive server response
+        spinner.visibility = View.VISIBLE
+
+        // instance of ListAdapter along with onItemClickListener to handle click event
+        adapter = ListAdapter { starBuck ->
             this.onItemClick(starBuck);
         }
         recyclerView.adapter = adapter
 
 
+        // Observer to handle success response changes in viewModel  as soon as we receive server response
         viewModel.movieList.observe(this.requireActivity()!!, Observer {
             Log.d(TAG, "onCreate: $it")
-
+            // Once we receive server response adding random Geocordinates to each item in result
                 setGeoCoordinates(this.currentLocation, it)
-
         })
 
+        // Observer to handle failure response changes in viewModel  as soon as we receive api fail message
         viewModel.errorMessage.observe(this.requireActivity()!!, Observer {
 
         })
+
+        // actual api call
         viewModel.getNearbyStarbucks()
 
 
         return view
     }
 
-
-    override fun onItemClick(model: Starbuck?) {
-        Log.d("Kajal","indide onClick1111::::"+model)
+// OnItemClickListener implementation that triggers to launch MapFragment with the selected list item
+    override fun onItemClick(model: Model?) {
+        Log.d(TAG,"indide onItemClick::::"+model)
         val fragmentTransaction: FragmentTransaction? = getActivity()?.getSupportFragmentManager()?.beginTransaction()
         val mapFragment = MapsFragment()
         val bundle = Bundle()
-        bundle.putParcelable("selectedStarbuck", model)
+        bundle.putParcelable("selectedMovie", model)
         mapFragment.setArguments(bundle)
         fragmentTransaction?.apply {
             add(R.id.fragment_container_view, mapFragment)
@@ -90,6 +104,8 @@ class ListFragment : Fragment(), OnItemClickListener {
         }
     }
 
+
+// Get random geoCordinates within 10 KM radius of current location
     protected fun getLocationInLatLngRad(
         radiusInMeters: Int,
         currentLocation: Location
@@ -123,13 +139,13 @@ class ListFragment : Fragment(), OnItemClickListener {
     }
 
     fun setGeoCoordinates(
-                          currentLocation: Location ,resultsArray: List<Starbuck>
-    ): ArrayList<Starbuck> {
-        var resultList: ArrayList<Starbuck> = arrayListOf()
+                          currentLocation: Location ,resultsArray: List<Model>
+    ): ArrayList<Model> {
+        var resultList: ArrayList<Model> = arrayListOf()
         for (i in 0 until resultsArray.size - 1) {
             try {
 
-                val location: Location = this.getLocationInLatLngRad(20000, this.currentLocation)!!
+                val location: Location = this.getLocationInLatLngRad(10000, this.currentLocation)!!
                 resultsArray[i].lat = location.latitude
                 resultsArray[i].lon = location.longitude
                 resultList.add(resultsArray[i])
@@ -137,7 +153,10 @@ class ListFragment : Fragment(), OnItemClickListener {
                 Log.e(TAG, "parseCafeData Error: " + e.toString())
             }
         }
-        Log.d("Kajal", "resultList: " + resultList)
+        Log.d(TAG, "resultList: " + resultList)
+
+        // Hide spinner and display recyclerView once we have the list ready along with geoCordinates set.
+        spinner.visibility = View.GONE
         adapter.setMovieList(resultList)
         return resultList;
     }
