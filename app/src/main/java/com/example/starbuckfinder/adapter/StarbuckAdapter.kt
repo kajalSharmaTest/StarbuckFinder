@@ -30,9 +30,10 @@ class StarbuckAdapter(
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val movie = movies[position]
         holder.binding.name.text = movie.name
+        holder.binding.tvDescription.text = movie.desc
 
 
-        // Glide.with(holder.itemView.context).load(movie.imageUrl).into(holder.binding.imageview)
+         Glide.with(holder.itemView.context).load(movie.imageUrl).into(holder.binding.imageview)
         holder.itemView.setOnClickListener {
             Log.d("Kajal","indide onClick0000")
             onItemClicked(movie) }

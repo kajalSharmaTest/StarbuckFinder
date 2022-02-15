@@ -22,9 +22,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsFragment : Fragment() {
     private var mMap: MapView? = null
-    lateinit var viewModel: StarbuckViewModel
     lateinit var selectedStarbuck: Starbuck
-    private val retrofitService = RetrofitService.getInstance()
+    val ZOOM_LEVEL = 10f
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -36,10 +35,10 @@ class MapsFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-        // val latLng: LatLng = LatLng(selectedStarbuck.latitude, selectedStarbuck.longitude)
-        val marker: MarkerOptions = MarkerOptions().position(LatLng(37.4220012, -122.0840024)).title("Marker")
+         val latLng: LatLng = LatLng(selectedStarbuck.lat, selectedStarbuck.lon)
+        val marker: MarkerOptions = MarkerOptions().position(latLng).title(selectedStarbuck.name)
         googleMap.addMarker(marker)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(37.4220012, -122.0840024)))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL))
     }
 
     override fun onCreateView(inflater: LayoutInflater,
