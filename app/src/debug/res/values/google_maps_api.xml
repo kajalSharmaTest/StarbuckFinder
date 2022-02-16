@@ -1,0 +1,24 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=CF:B8:BB:27:B5:5F:64:56:D1:28:8C:A1:A9:E0:06:44:19:DD:96:1B%3Bcom.example.starbuckfinder.view
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    com.example.starbuckfinder.view
+
+    SHA-1 certificate fingerprint:
+    CF:B8:BB:27:B5:5F:64:56:D1:28:8C:A1:A9:E0:06:44:19:DD:96:1B
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyArQqbk93voQ_cAhNtMSk5HkZXj8xcsZp8</string>
+</resources>

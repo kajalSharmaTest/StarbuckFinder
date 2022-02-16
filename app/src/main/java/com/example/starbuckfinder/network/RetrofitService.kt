@@ -1,17 +1,22 @@
 package com.example.starbuckfinder.network
 
-import com.example.starbuckfinder.model.Starbuck
+
+
+import com.example.starbuckfinder.model.Model
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Query
 
+/*
+Common service using retrofit for all network calls.
+There is just 1 object that can be used all over the project for making api calls
+ */
 interface RetrofitService {
 
-    @GET("api/place/nearbysearch/json?&key=AIzaSyArQqbk93voQ_cAhNtMSk5HkZXj8xcsZp8")
-    fun getNearbyStarbucks(@Query("QUERY_TYPE") type: String?,@Query("KEYWORD") keyword: String?, @Query("LATITUDE_LONGITUDE") location: String?, @Query("RANK_BY") rankby: String): Call<List<Starbuck>>
-
+    // api end point
+    @GET("movielist.json")
+    fun getAllMovies() : Call<List<Model>>
 
     companion object {
 
@@ -21,9 +26,9 @@ interface RetrofitService {
 
             if (retrofitService == null) {
                 val retrofit = Retrofit.Builder()
-                        .baseUrl("https://maps.googleapis.com/maps/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
+                        .baseUrl("https://howtodoandroid.com/")
+                        .addConverterFactory(GsonConverterFactory.create())  // Converter factory need to  convert JSON data (got from server) into java (model) objects (POJO)
+                        .build()
                 retrofitService = retrofit.create(RetrofitService::class.java)
             }
             return retrofitService!!
