@@ -1,7 +1,7 @@
 
 An Android app to list all nearby Movies.
 Click on the list will open the Movie location on a map.
-The app will search nearby Movies within radius of 10 Km  with current GPS position by default
+The app will search nearby Movies within radius of 10 Km  with current GPS position.
 
 Limitation
 ------------
