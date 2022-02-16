@@ -21,7 +21,7 @@ MapFragment to display selected list item on Map
 class MapsFragment : Fragment() {
     private var mMap: MapView? = null
     lateinit var selectedMovie: Model
-    val ZOOM_LEVEL = 10f
+    val ZOOM_LEVEL = 13f
     val TAG: String = "MapsFragment"
 
     /**
