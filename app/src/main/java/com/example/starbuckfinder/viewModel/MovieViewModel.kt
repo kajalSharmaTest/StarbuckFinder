@@ -28,12 +28,12 @@ class MovieViewModel constructor(private val repository: Repository)  : ViewMode
                 call: Call<List<Model>>,
                 response: Response<List<Model>>
             ) {
-                Log.d(TAG, "Response::::" + response.body());
+                Log.d(TAG, "Response::::" + response.body())
                 movieList.postValue(response.body())
             }
 
             override fun onFailure(call: Call<List<Model>>, t: Throwable) {
-                Log.d(TAG, "Response::::" + t.message);
+                Log.d(TAG, "Response::::" + t.message)
                 errorMessage.postValue(t.message)
             }
         })

@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity()  {
                         val listFragment = ListFragment()
                         val bundle = Bundle()
                         bundle.putParcelable("location", location)
-                        listFragment.setArguments(bundle)
+                        listFragment.arguments = bundle
                         fragmentTransaction.apply {
                             add(R.id.fragment_container_view, listFragment)
                             commit()

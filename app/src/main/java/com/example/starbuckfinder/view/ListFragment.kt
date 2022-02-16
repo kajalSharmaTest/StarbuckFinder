@@ -49,8 +49,8 @@ class ListFragment : Fragment(), OnItemClickListener {
         /*
         Retrieving current location detected in MainActivity
          */
-        if (getArguments() != null) {
-            currentLocation = requireArguments()?.getParcelable("location")!!
+        if (arguments != null) {
+            currentLocation = requireArguments().getParcelable("location")!!
             Log.d(TAG,"currentlatitude:::"+currentLocation.latitude)
             Log.d(TAG,"currentlongitude:::"+currentLocation.longitude)
         }
@@ -65,20 +65,20 @@ class ListFragment : Fragment(), OnItemClickListener {
 
         // instance of ListAdapter along with onItemClickListener to handle click event
         adapter = ListAdapter { starBuck ->
-            this.onItemClick(starBuck);
+            this.onItemClick(starBuck)
         }
         recyclerView.adapter = adapter
 
 
         // Observer to handle success response changes in viewModel  as soon as we receive server response
-        viewModel.movieList.observe(this.requireActivity()!!, Observer {
+        viewModel.movieList.observe(this.requireActivity(), Observer {
             Log.d(TAG, "onCreate: $it")
             // Once we receive server response adding random Geocordinates to each item in result
-                setGeoCoordinates(this.currentLocation, it)
+                setGeoCoordinates(it)
         })
 
         // Observer to handle failure response changes in viewModel  as soon as we receive api fail message
-        viewModel.errorMessage.observe(this.requireActivity()!!, Observer {
+        viewModel.errorMessage.observe(this.requireActivity(), Observer {
 
         })
 
@@ -92,11 +92,11 @@ class ListFragment : Fragment(), OnItemClickListener {
 // OnItemClickListener implementation that triggers to launch MapFragment with the selected list item
     override fun onItemClick(model: Model?) {
         Log.d(TAG,"indide onItemClick::::"+model)
-        val fragmentTransaction: FragmentTransaction? = getActivity()?.getSupportFragmentManager()?.beginTransaction()
+        val fragmentTransaction: FragmentTransaction? = activity?.supportFragmentManager?.beginTransaction()
         val mapFragment = MapsFragment()
         val bundle = Bundle()
         bundle.putParcelable("selectedMovie", model)
-        mapFragment.setArguments(bundle)
+    mapFragment.arguments = bundle
         fragmentTransaction?.apply {
             add(R.id.fragment_container_view, mapFragment)
                 .addToBackStack(null)
@@ -110,8 +110,8 @@ class ListFragment : Fragment(), OnItemClickListener {
         radiusInMeters: Int,
         currentLocation: Location
     ): Location? {
-        val x0: Double = currentLocation.getLongitude()
-        val y0: Double = currentLocation.getLatitude()
+        val x0: Double = currentLocation.longitude
+        val y0: Double = currentLocation.latitude
         val random = Random()
 
         // Convert radius from meters to degrees.
@@ -133,13 +133,13 @@ class ListFragment : Fragment(), OnItemClickListener {
         foundLatitude = y0 + y
         foundLongitude = x0 + new_x
         val copy = Location(currentLocation)
-        copy.setLatitude(foundLatitude)
-        copy.setLongitude(foundLongitude)
+    copy.latitude = foundLatitude
+    copy.longitude = foundLongitude
         return copy
     }
 
     fun setGeoCoordinates(
-                          currentLocation: Location ,resultsArray: List<Model>
+                          resultsArray: List<Model>
     ): ArrayList<Model> {
         var resultList: ArrayList<Model> = arrayListOf()
         for (i in 0 until resultsArray.size - 1) {
@@ -158,6 +158,6 @@ class ListFragment : Fragment(), OnItemClickListener {
         // Hide spinner and display recyclerView once we have the list ready along with geoCordinates set.
         spinner.visibility = View.GONE
         adapter.setMovieList(resultList)
-        return resultList;
+        return resultList
     }
 }

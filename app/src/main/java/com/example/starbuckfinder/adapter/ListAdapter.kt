@@ -57,6 +57,4 @@ class ListAdapter(
 /*
 View Holder for every item in recyclerView
  */
-class MainViewHolder(val binding: AdapterStarbuckBinding) : RecyclerView.ViewHolder(binding.root) {
-
-}
+class MainViewHolder(val binding: AdapterStarbuckBinding) : RecyclerView.ViewHolder(binding.root)

@@ -13,7 +13,7 @@ Architecture and Library
 
 - Retrofit for network calls
 - MVVM (Model View ViewModel) with data binding as architecture.
-- ListFragment and MapFragment transition within single Activity 
+- ListFragment and MapFragment transition within single Activity
 
 Implementation
 ------------

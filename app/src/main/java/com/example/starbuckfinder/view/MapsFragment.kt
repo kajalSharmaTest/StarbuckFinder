@@ -39,7 +39,7 @@ class MapsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(com.example.starbuckfinder.R.layout.fragment_maps, container, false)
+        return inflater.inflate(com.example.starbuckfinder.R.layout.fragment_maps, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,8 +48,8 @@ class MapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
 
         // Retrieving selected list item from arguments passed from previous ListFragment
-        if (getArguments() != null) {
-            selectedMovie = getArguments()?.getParcelable("selectedMovie")!!
+        if (arguments != null) {
+            selectedMovie = arguments?.getParcelable("selectedMovie")!!
             Log.d(TAG,"selectedStarbuck:::"+selectedMovie)
         }
 
